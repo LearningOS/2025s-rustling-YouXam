@@ -2,13 +2,12 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
 use std::vec::*;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Node<T> {
     val: T,
     next: Option<NonNull<Node<T>>>,
@@ -29,13 +28,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T: Clone + std::cmp::PartialOrd> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T: Clone + std::cmp::PartialOrd> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -71,12 +70,29 @@ impl<T> LinkedList<T> {
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+		let mut new_list = LinkedList::<T>::new();
+        let mut a = list_a.start;
+        let mut b = list_b.start;
+        while a.is_some() || b.is_some() {
+            if a.is_some() && b.is_some() {
+                let a_ptr = unsafe { a.unwrap().as_ref() };
+                let b_ptr = unsafe { b.unwrap().as_ref() };
+                if a_ptr.val < b_ptr.val {
+                    new_list.add(a_ptr.val.clone());
+                    a = a_ptr.next;
+                } else {
+                    new_list.add(b_ptr.val.clone());
+                    b = b_ptr.next;
+                }
+            } else if let Some(a_ptr) = a {
+                new_list.add(unsafe { a_ptr.as_ref().val.clone() });
+                a = unsafe { a_ptr.as_ref().next };
+            } else if let Some(b_ptr) = b {
+                new_list.add(unsafe { b_ptr.as_ref().val.clone() });
+                b = unsafe { b_ptr.as_ref().next };
+            }
         }
+        new_list
 	}
 }
 
