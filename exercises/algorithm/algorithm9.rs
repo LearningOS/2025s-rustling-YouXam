@@ -54,16 +54,16 @@ where
     }
 
     fn bubble_down(&mut self, idx: usize) {
-        // let mut idx = idx;
-        // while self.children_present(idx) {
-        //     let smallest_child_idx = self.smallest_child_idx(idx);
-        //     if (self.comparator)(&self.items[smallest_child_idx], &self.items[idx]) {
-        //         self.items.swap(idx, smallest_child_idx);
-        //         idx = smallest_child_idx;
-        //     } else {
-        //         break;
-        //     }
-        // }
+        let mut idx = idx;
+        while self.children_present(idx) {
+            let smallest_child_idx = self.smallest_child_idx(idx);
+            if (self.comparator)(&self.items[smallest_child_idx], &self.items[idx]) {
+                self.items.swap(idx, smallest_child_idx);
+                idx = smallest_child_idx;
+            } else {
+                break;
+            }
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
